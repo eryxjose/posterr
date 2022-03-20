@@ -14,14 +14,16 @@ namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
             try {
                 var context = services.GetRequiredService<DataContext>();
-                context.Database.Migrate();
+                await context.Database.MigrateAsync();
+
+                await Seed.SeedData(context);
             }
             catch (Exception ex) 
             {
@@ -29,7 +31,7 @@ namespace API
                 logger.LogError(ex, "Error trying to run Migrations.");
             }
 
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
