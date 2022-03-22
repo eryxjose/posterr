@@ -1,37 +1,24 @@
 using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
+using Application.Posts;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Persistence;
 
 namespace API.Controllers
 {
     public class PostsController : BaseApiController
     {
-        private readonly ILogger<PostsController> _logger;
-        private readonly DataContext _context;
-
-        public PostsController(ILogger<PostsController> logger, DataContext context)
-        {
-            _logger = logger;
-            _context = context;
-        }
 
         [HttpGet]
-        public async Task<ActionResult<List<Post>>> GetPosts()
+        public async Task<IActionResult> GetPosts([FromQuery] FilterParams param)
         {
-            return await _context.Posts.ToListAsync();
+            return HandlePagedResult(await Mediator.Send(new List.Query { Params = param }));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(Guid id)
+        public async Task<IActionResult> GetPost(Guid id)
         {
-            return await _context.Posts.FindAsync(id);
+            return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
         }
     }
 }
