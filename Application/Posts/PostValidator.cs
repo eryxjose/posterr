@@ -11,9 +11,8 @@ namespace Application.Posts
     {
         public PostValidator()
         {
-            RuleFor(o => o.Text).NotEmpty();
+            RuleFor(o => o.Text).NotEmpty().MaximumLength(777);
             RuleFor(o => o.CreatedAt).NotEmpty();
-            
         }
     }
 }
