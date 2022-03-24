@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +29,7 @@ namespace Application.Posts
 
             public async Task<Result<Post>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var post = await _context.Posts.FirstOrDefaultAsync(o => o.Id == request.Id);
+                var post = await _context.Posts.FindAsync(request.Id);
 
                 return Result<Post>.Success(post);
             }

@@ -30,31 +30,36 @@ namespace Persistence
                 Id = new Guid(),
                 UserName = "usr3",
             };
-
             var users = new List<AppUser>
             {
                 user1, user2, user3
             };
+            
+            await context.AppUsers.AddRangeAsync(users);
+            await context.SaveChangesAsync();
 
             var post1 = new Post
             {
                 CreatedAt = DateTime.Now.AddMonths(-2),
-                Text = "",
-                UserId = user1.Id
+                Text = "Phasellus hendrerit lorem felis, at condimentum odio convallis eu.",
+                AppUserId = user1.Id,
+                ParentId = ""
             };
 
             var post2 = new Post
             {
                 CreatedAt = DateTime.Now.AddMonths(-1),
-                Text = "",
-                UserId = user2.Id
+                Text = "Nunc nec aliquam risus, non vestibulum diam.",
+                AppUserId = user2.Id,
+                ParentId = ""
             };
 
             var post3 = new Post
             {
                 CreatedAt = DateTime.Now.AddMonths(-1),
-                Text = "",
-                UserId = user3.Id
+                Text = "Suspendisse interdum arcu nec est commodo semper.",
+                AppUserId = user3.Id,
+                ParentId = ""
             };
 
             var posts = new List<Post>
@@ -62,7 +67,7 @@ namespace Persistence
                 post1, post2, post3
             };
 
-            await context.AppUsers.AddRangeAsync(users);
+            
             await context.Posts.AddRangeAsync(posts);
             await context.SaveChangesAsync();
         }

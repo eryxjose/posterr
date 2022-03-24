@@ -26,13 +26,13 @@ namespace Application.Followers
             private readonly DataContext _context;
 
             private readonly IMapper _mapper;
-            private readonly IAppUserAccessor _userAccessor;
+            private readonly IAppUserAccessor _accessor;
 
-            public Handler(DataContext context, IMapper mapper, IAppUserAccessor userAccessor)
+            public Handler(DataContext context, IMapper mapper, IAppUserAccessor accessor)
             {
-                _userAccessor = userAccessor;
                 _context = context;
                 _mapper = mapper;
+                _accessor = accessor;
             }
 
             public async Task<Result<List<Profiles.Profile>>> Handle(Query request, CancellationToken cancellationToken)
@@ -45,14 +45,14 @@ namespace Application.Followers
                         profiles = await _context.UserFollowings.Where(x => x.Target.UserName == request.Username)
                             .Select(u => u.Observer)
                             .ProjectTo<Profiles.Profile>(_mapper.ConfigurationProvider, 
-                                new {currentUsername = _userAccessor.GetUsername()})
+                                new {currentUsername = _accessor.GetUsername() }) 
                             .ToListAsync();
                         break;
                     case "following":
                         profiles = await _context.UserFollowings.Where(x => x.Observer.UserName == request.Username)
                             .Select(u => u.Target)
                             .ProjectTo<Profiles.Profile>(_mapper.ConfigurationProvider, 
-                                new {currentUsername = _userAccessor.GetUsername()})
+                                new {currentUsername = _accessor.GetUsername() })
                             .ToListAsync();
                         break;
                 }
