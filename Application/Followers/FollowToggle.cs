@@ -17,6 +17,7 @@ namespace Application.Followers
         public class Command : IRequest<Result<Unit>>
         {
             public string TargetUsername { get; set; }
+            public string CurrentUsername { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -32,16 +33,17 @@ namespace Application.Followers
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var observer = await _context.AppUsers.FirstOrDefaultAsync(
-                    o => o.UserName == _appUserAcessor.GetUsername());
+                    o => o.UserName == request.CurrentUsername);
 
                 var target = await _context.AppUsers.FirstOrDefaultAsync(
                     o => o.UserName == request.TargetUsername);
 
-                if (target == null) return null;
+                if (target == null || observer == null || observer.UserName == target.UserName)
+                    return null;
 
                 var following = await _context.UserFollowings.FindAsync(observer.Id, target.Id);
 
-                if (following == null) 
+                if (following == null)
                 {
                     following = new UserFollowing
                     {
@@ -51,7 +53,7 @@ namespace Application.Followers
 
                     _context.UserFollowings.Add(following);
                 }
-                else 
+                else
                 {
                     _context.UserFollowings.Remove(following);
                 }

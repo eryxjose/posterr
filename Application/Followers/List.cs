@@ -19,6 +19,7 @@ namespace Application.Followers
         {
             public string Predicate { get; set; }
             public string Username { get; set; }
+            public string CurrentUsername { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<List<Profiles.Profile>>>
@@ -45,14 +46,14 @@ namespace Application.Followers
                         profiles = await _context.UserFollowings.Where(x => x.Target.UserName == request.Username)
                             .Select(u => u.Observer)
                             .ProjectTo<Profiles.Profile>(_mapper.ConfigurationProvider, 
-                                new {currentUsername = _accessor.GetUsername() }) 
+                                new {currentUsername = request.CurrentUsername }) 
                             .ToListAsync();
                         break;
                     case "following":
                         profiles = await _context.UserFollowings.Where(x => x.Observer.UserName == request.Username)
                             .Select(u => u.Target)
                             .ProjectTo<Profiles.Profile>(_mapper.ConfigurationProvider, 
-                                new {currentUsername = _accessor.GetUsername() })
+                                new {currentUsername = request.CurrentUsername }) 
                             .ToListAsync();
                         break;
                 }

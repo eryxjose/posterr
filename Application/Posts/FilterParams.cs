@@ -8,7 +8,7 @@ namespace Application.Posts
 {
     public class FilterParams : PagingParams
     {
-        public string AppUserId { get; set; }
+        public Guid AppUserId { get; set; }
         public bool OnlyRePosts { get; set; }
         public bool OnlyQuotePosts { get; set; }
     }
