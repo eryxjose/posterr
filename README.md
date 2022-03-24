@@ -13,6 +13,7 @@ Technologies
 Notes
 
 * I let the class 'AppUserValidator' in place, but it is not been used since 'AppUser' did not have CRUD operations as defined by assessment document.
+* Passing current logged username from parameters for simplicity since the assessment doc tell to not implement authentication
 
 
 Planning
