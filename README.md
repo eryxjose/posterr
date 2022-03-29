@@ -1,6 +1,10 @@
-# posterr
+# Posterr (Strider job opportunity)
 
-Strider job opportunity
+
+Local
+
+* Clone Posterr repository
+* 
 
 
 Technologies
@@ -9,18 +13,18 @@ Technologies
 * Fluent Validation
 * 
 
-
 Notes
 
+* 
 * I let the class 'AppUserValidator' in place, but it is not been used since 'AppUser' did not have CRUD operations as defined by assessment document.
-* Passing current logged username from parameters for simplicity since the assessment doc tell to not implement authentication
+* Passing current logged username with parameters for simplicity since the assessment doc tell to not implement authentication
 
 
 Planning
 
 
 
-Self-critique and Scaling
+Self-Critique and Scaling
 
 * Different databases for commands and queries
   * Optimized database specific for insert/update operations 
@@ -32,3 +36,9 @@ Self-critique and Scaling
   * Provide a controller with all the possible error responses 
 * Authentication
   * Use external auth provider based on JWT 
+* Allow change page size
+* Create a policy to only allow the post author to edit post information
+* 
+
+
+

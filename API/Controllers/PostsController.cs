@@ -8,7 +8,6 @@ namespace API.Controllers
 {
     public class PostsController : BaseApiController
     {
-
         [HttpGet]
         public async Task<IActionResult> GetPosts([FromQuery] FilterParams param)
         {
