@@ -35,11 +35,18 @@ namespace Application.Posts
 
             public async Task<Result<PagedList<PostDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var posts = _context.Posts.Include(o => o.AppUser).AsQueryable();
+                var posts = _context.Posts.Include(o => o.AppUser)
+                    .OrderByDescending(o => o.CreatedAt).AsQueryable();
 
                 if (request.Params.OnlyFollowing)
                     posts = posts.Where(o => o.AppUser.Followers.Any(x => 
                         x.Observer.UserName == request.Params.CurrentUsername));
+                
+                if (request.Params.OnlyRePosts)
+                    posts = posts.Where(o => String.IsNullOrEmpty(o.Text) && !String.IsNullOrEmpty(o.ParentId));
+
+                if (request.Params.OnlyQuotePosts)
+                    posts = posts.Where(o => !String.IsNullOrEmpty(o.Text) && !String.IsNullOrEmpty(o.ParentId));                    
 
                 var result = posts.ProjectTo<PostDto>(_mapper.ConfigurationProvider, 
                         new {currentUsername = request.Params.CurrentUsername});

@@ -24,6 +24,20 @@ Planning
 
 
 
+## Test records
+
+New Post
+
+  {
+    "id": "ffff5f64-5717-4562-b3fc-2c963f66afa6",
+    "parentId": "",
+    "appUserId": "5709c5de-08d5-4547-8de1-1830636576da",
+    "text": "Nullam non orci tincidunt, fringilla nisi ut, consectetur ex.",
+    "createdAt": "2022-03-31T21:11:08.637Z",
+    "appUser": null
+  }
+
+
 Self-Critique and Scaling
 
 * Different databases for commands and queries

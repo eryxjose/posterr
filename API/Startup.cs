@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using FluentValidation.AspNetCore;
 using Application.Posts;
 using API.Middleware;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace API
 {
@@ -20,12 +22,24 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers().AddFluentValidation(config => 
+            services.Configure<RequestLocalizationOptions>(options =>
             {
-                config.RegisterValidatorsFromAssemblyContaining<Create>(); // could be any class located on assembly project
+                options.RequestCultureProviders.Clear();
+                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
+                options.SupportedCultures = new List<CultureInfo> { new CultureInfo("en-US") };
             });
+
+            services.AddControllers()
+                .AddJsonOptions(opt => 
+                {
+                    opt.JsonSerializerOptions.Converters.Add(new Converters.DateTimeConverter());
+                })
+                .AddFluentValidation(config => 
+                {
+                    config.RegisterValidatorsFromAssemblyContaining<Create>(); // could be any class located on assembly project
+                });
             services.AddApplicationServices(_config);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

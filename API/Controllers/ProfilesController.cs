@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Profiles;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,11 @@ namespace API.Controllers
         }
 
         [HttpGet("{username}/posts")]
-        public async Task<IActionResult> GetUserPosts(string username)
+        public async Task<IActionResult> GetUserPosts(string username, 
+            [FromQuery] PagingParams pagingParams)
         {
             return HandleResult(await Mediator.Send(new ListPosts.Query
-                { Username = username }));
+                { Username = username, PagingParams = pagingParams }));
         }
     }
 }

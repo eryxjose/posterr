@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Posts;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,11 @@ namespace API.Controllers
     public class PostsController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetPosts([FromQuery] FilterParams param)
+        public async Task<IActionResult> GetPosts([FromQuery] FilterParams param, 
+            [FromQuery] PagingParams pagingParams)
         {
-            return HandlePagedResult(await Mediator.Send(new List.Query { Params = param }));
+            return HandlePagedResult(await Mediator.Send(
+                new List.Query { Params = param, PagingParams = pagingParams }));
         }
 
         [HttpGet("{id}")]

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Posts;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +16,15 @@ namespace Application.Profiles
 {
     public class ListPosts
     {
-        public class Query : IRequest<Result<List<Post>>>
+        public class Query : IRequest<Result<PagedList<PostDto>>>
         {
             public string Username { get; set; }
+            public PagingParams PagingParams { get; set; }
+
             // public string Predicate { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<List<Post>>>
+        public class Handler : IRequestHandler<Query, Result<PagedList<PostDto>>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -30,17 +34,18 @@ namespace Application.Profiles
                 _context = context;
             }
 
-            public async Task<Result<List<Post>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<PagedList<PostDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
+                var currentUser = _context.AppUsers.FirstOrDefault(o => o.UserName == request.Username);
+
                 var query = _context.Posts
-                    // .Include(o => o.AppUser)
-                    // .Where(u => u.AppUser.UserName == request.Username)
+                    .Where(u => u.AppUserId == currentUser.Id)
                     .OrderBy(a => a.CreatedAt)
-                    .AsQueryable();
+                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider);
 
-                var posts = await query.ToListAsync();
-
-                return Result<List<Post>>.Success(posts);
+                return Result<PagedList<PostDto>>.Success(
+                    await PagedList<PostDto>.CreateAsync(
+                        query, request.PagingParams.PageNumber, request.PagingParams.PageSize));
             }
         }
     }
