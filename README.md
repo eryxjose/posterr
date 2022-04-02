@@ -1,44 +1,35 @@
-# Posterr (Strider job opportunity)
+# Posterr 
+
+Posterr is an application that allow users to post, repost and quot-post other users posts.
 
 
-Local
+# Technologies
 
-* Clone Posterr repository
-* 
-
-
-Technologies
-
+* .NET5 and C#
+* EFCore Code First (Migrations and Seed Data)
 * CQRS + Mediator
 * Fluent Validation
-* 
+* SQLite
 
-Notes
+# Planning
 
-* 
-* I let the class 'AppUserValidator' in place, but it is not been used since 'AppUser' did not have CRUD operations as defined by assessment document.
-* Passing current logged username with parameters for simplicity since the assessment doc tell to not implement authentication
+## Reply To Post
 
+Questions
 
-Planning
+* Users can reply to multiple posts on the same post?
+  * There is a limit to the number of posts to mention besides character limits?
+* There will be alternative way to mention posts besides at (@) character?
 
+Proposed Solution
 
+* Include a boolean to indicate that posts contains mentions to other posts.
+* The mentions will be stored in specific text format containing first 5 to 8 words and at least first 12 characters Guid post identification wich can be shown as hyperlinks on the frontend togheter with respective texts.
+* Frontend will generate link and show referenced posts using special formated texts.
+* Application layer will check for specific text format on the post to set the post mentions boolean when creating new posts. 
+* API will have new endpoints to return all post mentions.
 
-## Test records
-
-New Post
-
-  {
-    "id": "ffff5f64-5717-4562-b3fc-2c963f66afa6",
-    "parentId": "",
-    "appUserId": "5709c5de-08d5-4547-8de1-1830636576da",
-    "text": "Nullam non orci tincidunt, fringilla nisi ut, consectetur ex.",
-    "createdAt": "2022-03-31T21:11:08.637Z",
-    "appUser": null
-  }
-
-
-Self-Critique and Scaling
+# Critique
 
 * Different databases for commands and queries
   * Optimized database specific for insert/update operations 
@@ -50,9 +41,12 @@ Self-Critique and Scaling
   * Provide a controller with all the possible error responses 
 * Authentication
   * Use external auth provider based on JWT 
-* Allow change page size
-* Create a policy to only allow the post author to edit post information
-* 
+  * Use Policies for authorization
+* Unit and Integration Tests
+  * I was not able to set unit tests for different reasons
 
+# Notes
 
-
+* I was not able to figure out a solution to EF5 with Moq to automatic generate fake dbcontext and other problems to implement the automating and unit tests on the time available.
+* I let the class 'AppUserValidator' in place, but it is not been used since 'AppUser' did not have CRUD operations as defined by assessment document.
+* Passing current logged username with parameters for simplicity since the assessment doc tell to not implement authentication and I was not able to implement alternative way to create usercontext to simulate validation.
